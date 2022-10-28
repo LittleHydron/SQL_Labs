@@ -1,12 +1,34 @@
 -- tables
--- Table: Program_contains
+-- Table: ProgramContains
 use GYM_Database;
 
-CREATE TABLE Program_contains (
-    ID int  NOT NULL auto_increment,
+DROP TABLE IF EXISTS ProgramContains;
+DROP TABLE IF EXISTS SetOfExcercises;
+DROP TABLE IF EXISTS TrainerWorksIn;
+DROP TABLE IF EXISTS Trainee;
+DROP TABLE IF EXISTS Trainer;
+DROP TABLE IF EXISTS Excercise;
+DROP TABLE IF EXISTS Program;
+DROP TABLE IF EXISTS Gym;
+
+CREATE TABLE Gym(
+	ID int NOT NULL auto_increment,
+    name varchar(45) NOT NULL,
+    date_of_creation date NOT NULL,
+    adress varchar(45) NOT NULL,
+    CONSTRAINT Gym_pk PRIMARY KEY (ID)
+);
+
+CREATE TABLE TrainerWorksIn(
+	trainer_ID int NOT NULL,
+    gym_ID int NOT NULL,
+    CONSTRAINT TrainerWorksIn_pk PRIMARY KEY (trainer_id, gym_id)
+);
+
+CREATE TABLE ProgramContains (
     Excercise_ID int  NOT NULL,
     Program_ID int  NOT NULL,
-    CONSTRAINT Program_contains_pk PRIMARY KEY (ID)
+    CONSTRAINT ProgramContains_pk PRIMARY KEY (Excercise_id, Program_ID)
 );
 
 -- Table: Excercise
@@ -27,15 +49,15 @@ CREATE TABLE Program (
     CONSTRAINT Program_pk PRIMARY KEY (ID)
 );
 
--- Table: Set_of_excercises
-CREATE TABLE Set_of_excercises (
+-- Table: SetOfExcercises
+CREATE TABLE SetOfExcercises (
     ID int  NOT NULL auto_increment,
     Program_ID int  NOT NULL,
     Trainer_ID int  NOT NULL,
     Trainee_ID int  NOT NULL,
     Date_of_start date  NOT NULL,
     Date_of_end date  NOT NULL,
-    CONSTRAINT Set_of_excercises_pk PRIMARY KEY (ID)
+    CONSTRAINT SetOfExcercises_pk PRIMARY KEY (ID)
 );
 
 -- Table: Trainee
@@ -58,32 +80,43 @@ CREATE TABLE Trainer (
 );
 
 -- foreign keys
--- Reference: Program_contains_Excercise (table: Program_contains)
-ALTER TABLE Program_contains ADD CONSTRAINT Program_contains_Excercise
+-- Reference: ProgramContains_Excercise (table: ProgramContains)
+ALTER TABLE ProgramContains ADD CONSTRAINT ProgramContains_Excercise
     FOREIGN KEY (Excercise_ID)
     REFERENCES Excercise (ID)
 ;
 
--- Reference: Program_contains_Program (table: Program_contains)
-ALTER TABLE Program_contains ADD CONSTRAINT Program_contains_Program
+-- Reference: ProgramContains_Program (table: ProgramContains)
+ALTER TABLE ProgramContains ADD CONSTRAINT ProgramContains_Program
     FOREIGN KEY (Program_ID)
     REFERENCES Program (ID)
 ;
 
--- Reference: Set_Program (table: Set_of_excercises)
-ALTER TABLE Set_of_excercises ADD CONSTRAINT Set_Program
+ALTER TABLE TrainerWorksIn ADD CONSTRAINT TrainerWorksIn_Trainer
+    FOREIGN KEY (trainer_ID)
+    REFERENCES Trainer (ID)
+;
+
+ALTER TABLE TrainerWorksIn ADD CONSTRAINT TrainerWorksIn_Gym
+    FOREIGN KEY (gym_ID)
+    REFERENCES Gym (ID)
+;
+
+
+-- Reference: Set_Program (table: SetOfExcercises)
+ALTER TABLE SetOfExcercises ADD CONSTRAINT Set_Program
     FOREIGN KEY (Program_ID)
     REFERENCES Program (ID)
 ;
 
--- Reference: Set_Trainee (table: Set_of_excercises)
-ALTER TABLE Set_of_excercises ADD CONSTRAINT Set_Trainee
+-- Reference: Set_Trainee (table: SetOfExcercises)
+ALTER TABLE SetOfExcercises ADD CONSTRAINT Set_Trainee
     FOREIGN KEY (Trainee_ID)
     REFERENCES Trainee (ID)
 ;
 
--- Reference: Set_Trainer (table: Set_of_excercises)
-ALTER TABLE Set_of_excercises ADD CONSTRAINT Set_Trainer
+-- Reference: Set_Trainer (table: SetOfExcercises)
+ALTER TABLE SetOfExcercises ADD CONSTRAINT Set_Trainer
     FOREIGN KEY (Trainer_ID)
     REFERENCES Trainer (ID)
 ;
@@ -93,6 +126,36 @@ ALTER TABLE Trainee ADD CONSTRAINT Trainee_Trainer
     FOREIGN KEY (Trainer_ID)
     REFERENCES Trainer (ID)
 ;
+
+CREATE INDEX Trainer_name_idx
+ON Trainer(name);
+
+CREATE INDEX Trainer_date_idx
+ON Trainer(Date_of_registration);
+
+CREATE INDEX Gym_name_idx
+ON Gym(name);
+
+CREATE INDEX Gym_date_idx
+ON Gym(date_of_creation);
+
+CREATE INDEX Gym_adress_idx
+ON Gym(adress);
+
+CREATE INDEX Program_dificulty_idx
+ON Program(Dificulty_level);
+
+CREATE INDEX Trainee_name_idx
+ON Trainee(name);
+
+CREATE INDEX Trainee_date_idx
+ON Trainee(Date_of_registration);
+
+CREATE INDEX Trainee_trainer_idx
+ON Trainee(Trainer_ID);
+
+CREATE INDEX Excercise_name_idx
+ON Excercise(Name);
 
 -- Insertions:
 
@@ -266,69 +329,69 @@ values(
 	"Mobster", 167
 );
 
--- Table Program_contains
-insert into Program_contains(Excercise_ID, Program_ID)
+-- Table ProgramContains
+insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	1, 1
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	2, 1
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	3, 2
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	10, 1
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	3, 2
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	2, 2
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	6, 6
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	10, 6
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	10, 10
-);insert into Program_contains(Excercise_ID, Program_ID)
+);insert into ProgramContains(Excercise_ID, Program_ID)
 values(
 	3, 7
 );
 
--- Table Set_of_excercises:
-insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+-- Table SetOfExcercises:
+insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	1, 1, 1, '2019-01-01', '2020-01-01'
 );
-insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	1, 2, 3, '2010-01-01', '2030-01-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	10, 1, 7, '2011-11-01', '2020-01-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	10, 10, 10, '2029-01-01', '2050-01-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	1, 1, 1, '2019-01-01', '2020-01-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	1, 10, 8, '2019-08-10', '2023-10-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	7, 9, 9, '2019-11-11', '2021-01-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	10, 7, 3, '2008-10-11', '2020-01-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	6, 8, 10, '2019-01-01', '2020-01-01'
-);insert into Set_of_excercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
+);insert into SetOfExcercises(Program_ID, Trainer_ID, Trainee_ID, Date_of_start, Date_of_end)
 values(
 	5, 4, 3, '2015-11-01', '2021-01-11'
 );
@@ -338,5 +401,5 @@ select * from Trainer;
 select * from Trainee;
 select * from Excercise;
 select * from Program;
-select * from Program_contains;
-select * from Set_of_excercises;
+select * from ProgramContains;
+select * from SetOfExcercises;
